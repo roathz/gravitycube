@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #1a1a1a; /* Dark dystopian vibe */
+    overflow: hidden;
+    font-family: 'Press Start 2P', cursive;
+}
+
+#game-container {
+    border: 3px solid #00ffcc; /* Neon border */
+    box-shadow: 0 0 20px #00ffcc; /* Neon glow */
+    border-radius: 5px;
+}
+
+.title {
+    color: #00ffcc;
+    text-align: center;
+    text-shadow: 0 0 10px #00ffcc;
+    margin-bottom: 20px;
+    font-family: 'Press Start 2P', cursive;
+} 
