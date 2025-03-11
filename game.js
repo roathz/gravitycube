@@ -622,7 +622,7 @@ function gameOver(player, obstacle) {
     }
     
     // Show game over text - CHANGED TO SOFT BROWN
-    this.add.text(400, 300, 'GAME OVER', {
+    const gameOverText = this.add.text(400, 300, 'GAME OVER', {
         fontFamily: '"Press Start 2P"',
         fontSize: '24px',
         fill: '#665544'
@@ -634,17 +634,114 @@ function gameOver(player, obstacle) {
         fill: '#665544'
     }).setOrigin(0.5);
     
-    // Restart button - CHANGED TO SOFT BROWN
-    const restartButton = this.add.text(400, 450, 'Tap to Restart', {
-        fontFamily: '"Press Start 2P"',
-        fontSize: '12px',
-        fill: '#665544'
-    }).setOrigin(0.5);
+    // Delay showing the restart button to create dramatic effect
+    this.time.delayedCall(400, () => {
+        createRestartButton(this);
+    });
+}
+
+// Helper function to create the restart button with animation
+function createRestartButton(scene) {
+    const buttonY = 450;
     
-    restartButton.setInteractive();
-    restartButton.on('pointerdown', () => {
+    // Calculate the size based on text content and make it similar to "GAME" in "GAME OVER"
+    const buttonText = "TRY AGAIN";
+    
+    // Create a text object to get the width for our button
+    const textObj = scene.add.text(0, 0, buttonText, {
+        fontFamily: '"Press Start 2P"',
+        fontSize: '16px',
+        fill: '#cdb891' // Beige color for contrast
+    });
+    const textWidth = textObj.width;
+    const textHeight = textObj.height;
+    textObj.destroy(); // Remove the temporary text
+    
+    // Set button dimensions (with padding)
+    const buttonWidth = textWidth + 40; // Add padding
+    const buttonHeight = textHeight + 20; // Add padding
+    const buttonX = 400; // Center of screen
+    
+    // Create the button with zero scale (for entrance animation)
+    const restartButton = scene.add.graphics();
+    restartButton.fillStyle(0x665544, 1); // Same color as text
+    restartButton.fillRect(
+        -buttonWidth/2, 
+        -buttonHeight/2, 
+        buttonWidth, 
+        buttonHeight
+    );
+    
+    // Create a container for the button and text (for easier animation)
+    const buttonContainer = scene.add.container(buttonX, buttonY);
+    buttonContainer.setScale(0); // Start with zero scale
+    buttonContainer.add(restartButton);
+    
+    // Add "TRY AGAIN" text to the button
+    const restartText = scene.add.text(0, 0, buttonText, {
+        fontFamily: '"Press Start 2P"',
+        fontSize: '16px',
+        fill: '#cdb891' // Beige background color for contrast
+    }).setOrigin(0.5);
+    buttonContainer.add(restartText);
+    
+    // Create invisible hit area over the button
+    const hitArea = scene.add.rectangle(
+        0, 
+        0, 
+        buttonWidth, 
+        buttonHeight
+    );
+    hitArea.setInteractive();
+    buttonContainer.add(hitArea);
+    
+    // Entrance animation
+    scene.tweens.add({
+        targets: buttonContainer,
+        scale: 1,
+        duration: 600,
+        ease: 'Back.out',
+        onComplete: () => {
+            // Start breathing animation after entrance is complete
+            scene.tweens.add({
+                targets: buttonContainer,
+                scaleX: 1.05,
+                scaleY: 1.05,
+                duration: 1000,
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut'
+            });
+        }
+    });
+    
+    // Add hover effect
+    hitArea.on('pointerover', () => {
+        restartButton.clear();
+        restartButton.fillStyle(0x7a6655, 1); // Lighter shade when hovering
+        restartButton.fillRect(
+            -buttonWidth/2, 
+            -buttonHeight/2, 
+            buttonWidth, 
+            buttonHeight
+        );
+    });
+    
+    hitArea.on('pointerout', () => {
+        restartButton.clear();
+        restartButton.fillStyle(0x665544, 1); // Back to original color
+        restartButton.fillRect(
+            -buttonWidth/2, 
+            -buttonHeight/2, 
+            buttonWidth, 
+            buttonHeight
+        );
+    });
+    
+    // Add the restart functionality
+    hitArea.on('pointerdown', () => {
         console.log("Restarting game");
-        this.scene.restart();
+        scene.scene.restart();
     });
 }
 

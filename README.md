@@ -17,6 +17,25 @@ You can play the game online at: [https://roathz.github.io/gravitycube/](https:/
 - High score tracking
 - Dynamic obstacle generation
 - Progressive game phases
+- Animated "TRY AGAIN" button with breathing effect after game over
+- Larger spikes and group obstacles in later phases
+
+## Recent Updates
+
+### UI Improvements
+- Added a clean scoreboard display showing "HI SCORE" and current score
+- Replaced restart symbol with a text-based "TRY AGAIN" button
+- Added appealing button animations:
+  - Button appears 0.4 seconds after game over
+  - Smooth entrance animation with slight bounce effect
+  - Continuous "breathing" animation to draw player attention
+  - Hover effects for better user feedback
+
+### Gameplay Enhancements
+- Increased spike size by 1.4 times for more challenging obstacles
+- Added grouped spikes (2-3) that appear more frequently in later phases
+- Improved collision detection with smaller hitboxes for more accurate gameplay
+- Added visual feedback for collisions
 
 ## Development
 
