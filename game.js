@@ -15,6 +15,9 @@ try {
     };
 }
 
+// Debug flag - set to true to see collision hitboxes
+const DEBUG_HITBOXES = false;
+
 // Game variables
 let player;
 let platforms;
@@ -41,7 +44,7 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: false
+            debug: DEBUG_HITBOXES // Show hitboxes when debugging is enabled
         }
     },
     scene: {
@@ -129,6 +132,16 @@ function create() {
     player.setVelocityY(PLAYER_VELOCITY); // Start with downward velocity
     player.isCeiling = false; // Track surface
     player.isOnSurface = false; // Track if touching floor or ceiling
+    
+    // Adjust the player's hitbox to be smaller than the visual appearance
+    // This creates a more forgiving collision area that better matches what players see
+    const playerHitboxReduction = 5; // Reduce hitbox by 5 pixels on each side
+    player.body.setSize(
+        player.width - (playerHitboxReduction * 2),
+        player.height - (playerHitboxReduction * 2)
+    );
+    // Center the hitbox
+    player.body.setOffset(playerHitboxReduction, playerHitboxReduction);
     
     // Create platforms
     platforms = this.physics.add.staticGroup();
@@ -495,6 +508,16 @@ function createObstacle(scene, x, yPos) {
     newObstacle.body.setAllowGravity(false);
     newObstacle.body.setImmovable(true);
     
+    // Adjust the hitbox to be smaller than the visual appearance
+    // This creates a more forgiving collision area that better matches what players see
+    const hitboxReduction = 10; // Reduce hitbox by 10 pixels on each side
+    newObstacle.body.setSize(
+        newObstacle.width - (hitboxReduction * 2),
+        newObstacle.height - (hitboxReduction * 2)
+    );
+    // Center the hitbox
+    newObstacle.body.setOffset(hitboxReduction, hitboxReduction);
+    
     return newObstacle;
 }
 
@@ -556,6 +579,27 @@ function gameOver(player, obstacle) {
     
     // Visual feedback
     player.setTint(0xff0000);
+    
+    // Add a collision indicator if the obstacle exists
+    if (obstacle) {
+        // Create a flash effect at the collision point
+        const collisionPoint = this.add.circle(
+            player.x, 
+            player.y, 
+            20, 
+            0xff0000, 
+            0.8
+        );
+        
+        // Animate the collision point
+        this.tweens.add({
+            targets: collisionPoint,
+            alpha: 0,
+            scale: 2,
+            duration: 500,
+            ease: 'Power2'
+        });
+    }
     
     // Calculate final score
     const finalScore = Math.floor(score / DISTANCE_FACTOR);
